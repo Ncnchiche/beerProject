@@ -42,6 +42,7 @@ The beer recommendation system was made using Python programming language and se
     1. cd into directory
     
     2. Create venv:
+            
             python -m venv venv
      
     3. Activate virtual environment
