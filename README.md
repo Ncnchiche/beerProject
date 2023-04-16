@@ -30,6 +30,9 @@ The beer recommendation system was made using Python programming language and se
 
 1. Download or clone the repository.
 
+2. Add Data Set To your repository.
+[beer_reviews.csv](https://data.world/socialmediadata/beeradvocate/workspace/file?filename=beer_reviews.csv)
+
 2. Create a virtual environment (optional, but recommended):
 
 3. Activate and install required libraries using requirments.txt
@@ -37,6 +40,4 @@ The beer recommendation system was made using Python programming language and se
 pip install -r requirements.txt
 ```
 
-### Data Set Link
-
-[beer_reviews.csv](https://data.world/socialmediadata/beeradvocate/workspace/file?filename=beer_reviews.csv)
+4. Run the main.py file and have fun
