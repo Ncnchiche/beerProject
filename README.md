@@ -39,9 +39,29 @@ The beer recommendation system was made using Python programming language and se
 
 3. Create a virtual environment (optional, but recommended):
 
+    1. cd into directory
+    
+    2. Create venv:
+            python -m venv venv
+     
+    3. Activate virtual environment
+            
+        -To Activate on Windows:
+
+            .\venv\Scripts\activate
+
+
+        -To Activate on Mac:
+
+            source venv/bin/activate
+
+            
 4. Activate and install required libraries using requirments.txt
     ```
     pip install -r requirements.txt
     ```
 
 5. Run the main.py file and have fun :)
+    ```
+    python3 main.py
+    ```
