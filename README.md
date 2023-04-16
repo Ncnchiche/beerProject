@@ -19,16 +19,19 @@ This program is a beer recommendation system based on user input of two beers th
 
 The beer recommendation system was made using Python programming language and several libraries which are included in the requirments(Pandas, NumPy, scikit-learn, and random)
 
-### Requirements
+### Requirements:
 
 - Python 3.6 or newer
 - pandas
 - numpy
 - scikit-learn
 
-## Installation
+## How to run
 
 1. Download or clone the repository.
+    ```
+    git clone [link]
+    ```
 
 2. Add Data Set To your repository:
 
@@ -37,8 +40,8 @@ The beer recommendation system was made using Python programming language and se
 2. Create a virtual environment (optional, but recommended):
 
 3. Activate and install required libraries using requirments.txt
-```python
-pip install -r requirements.txt
-```
+    ```
+    pip install -r requirements.txt
+    ```
 
-4. Run the main.py file and have fun
+4. Run the main.py file and have fun :)
