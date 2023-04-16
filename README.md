@@ -1,7 +1,7 @@
 <h1 align="center">Beer Recommendation Project</h1>
 
 
-## What it does
+## What is this?
 
 This beer recommendation system is a Python script that uses a K-Nearest Neighbors (KNN) classifier to suggest beers that a user might enjoy based on their preferences.
 
