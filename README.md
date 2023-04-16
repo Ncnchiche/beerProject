@@ -37,11 +37,11 @@ The beer recommendation system was made using Python programming language and se
 
 - [beer_reviews.csv](https://data.world/socialmediadata/beeradvocate/workspace/file?filename=beer_reviews.csv)
 
-2. Create a virtual environment (optional, but recommended):
+3. Create a virtual environment (optional, but recommended):
 
-3. Activate and install required libraries using requirments.txt
+4. Activate and install required libraries using requirments.txt
     ```
     pip install -r requirements.txt
     ```
 
-4. Run the main.py file and have fun :)
+5. Run the main.py file and have fun :)
