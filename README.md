@@ -65,3 +65,7 @@ The beer recommendation system was made using Python programming language and se
     ```
     python3 main.py
     ```
+    
+ ## Demo from Command Line
+ 
+![My Image](samplePicture.png)
