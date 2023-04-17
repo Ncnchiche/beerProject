@@ -76,6 +76,8 @@ https://github.com/Ncnchiche/beerProject
 
 6. When prompted for Profile name(you can find them on CSV) and it will give you top 10 recommendations
 
- ## Demo from Command Line
+
+ ## Demo
+ 
  
 ![My Image](samplePicture.png)
