@@ -68,7 +68,7 @@ https://github.com/Ncnchiche/beerProject
             source venv/bin/activate
 
             
-4. Activate and install required libraries using requirments.txt
+4. Once virtual environment activated, install required libraries using requirments.txt
     ```
     pip install -r requirements.txt
     ```
