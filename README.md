@@ -74,10 +74,27 @@ https://github.com/Ncnchiche/beerProject
     python3 main.py
     ```
 
-6. When prompted for Profile name(you can find them on CSV) and it will give you top 10 recommendations
+6. Once its started running you will be provided with the metrics and then prompted for Profile name(you can find profile name on [beer_reviews.csv](https://data.world/socialmediadata/beeradvocate/workspace/file?filename=beer_reviews.csv)) and then itll provide you with the top 10 recommendations
+
+## Metrics Information
+
+- The Program calculates the Metrics and displays it. 
+- It provide an assessment of the model's performance. 
+
+This information is useful to understand the reliability of the recommendations provided by the system and for fine-tuning the model to improve its accuracy.
+
+### Keywords:
+
+***Precision:*** The proportion of recommended items that are relevant. It refers to the percentage of recommended beers that a user would rate highly (above a certain threshold).
+
+***Recall:*** The proportion of relevant items that are recommended. In this context, it is the percentage of beers rated highly by the user that are included in the recommendations.
+
+***F1 Score:*** A higher F1 score means the model does a better job of finding the right items without recommending too many irrelevant ones. In simpler terms, the F1 score tells us how well our model is doing in making accurate recommendations.
+
+***RMSE(Root Mean Square Error):*** is a way to measure how good a model is at making predictions. It tells us how far off our predictions are from the actual results. Lower the better
 
 
- ## Demo
+## Demo
  
  
 ![My Image](samplePicture.png)
