@@ -25,10 +25,15 @@ The beer recommendation system was made using Python programming language and se
 ### Requirements:
 
 -Python 3
+
 -pandas
+
 -numpy
+
 -scikit-learn
+
 -Surprise
+
 
 ## How to run
 
