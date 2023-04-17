@@ -34,7 +34,6 @@ The beer recommendation system was made using Python programming language and se
 
 -Surprise
 
-
 ## How to run
 
 1. Download or clone the repository.
