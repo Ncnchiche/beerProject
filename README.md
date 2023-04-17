@@ -29,6 +29,9 @@ The beer recommendation system was made using Python programming language and se
 ## How to run
 
 1. Download or clone the repository.
+
+https://github.com/Ncnchiche/beerProject
+
     ```
     git clone [link]
     ```
