@@ -1,114 +1,158 @@
 import pandas as pd
 import numpy as np
-import random
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
-from sklearn.neighbors import KNeighborsClassifier
+from surprise import Dataset, Reader
+from surprise import SVD
+from surprise.model_selection import train_test_split
+from surprise import accuracy
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from sklearn.preprocessing import LabelEncoder
+
+
+def precision_recall_at_k(predictions, k=10, threshold=3.5):
+    user_est_true = dict()
+    for uid, _, true_r, est, _ in predictions:
+        current = user_est_true.get(uid, [])
+        current.append((est, true_r))
+        user_est_true[uid] = current
+
+    precisions = dict()
+    recalls = dict()
+    for uid, user_ratings in user_est_true.items():
+        user_ratings.sort(key=lambda x: x[0], reverse=True)
+        n_rel = sum((true_r >= threshold) for (_, true_r) in user_ratings)
+        n_rec_k = sum((est >= threshold) for (est, _) in user_ratings[:k])
+        n_rel_and_rec_k = sum(((true_r >= threshold) and (est >= threshold))
+                              for (est, true_r) in user_ratings[:k])
+        precisions[uid] = n_rel_and_rec_k / n_rec_k if n_rec_k != 0 else 1
+        recalls[uid] = n_rel_and_rec_k / n_rel if n_rel != 0 else 1
+    return precisions, recalls
+
+def get_top_n(predictions, n=5):
+    top_n = {}
+    for uid, iid, true_r, est, _ in predictions:
+        if uid not in top_n:
+            top_n[uid] = [(iid, est)]  # Remove the true_r here
+        else:
+            top_n[uid].append((iid, est))  # Remove the true_r here
+    for uid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+    return top_n
+
+
+def f1_score(precisions, recalls):
+    f1_scores = dict()
+    for uid in precisions:
+        precision = precisions[uid]
+        recall = recalls[uid]
+        if precision + recall == 0:
+            f1_scores[uid] = 0
+        else:
+            f1_scores[uid] = 2 * (precision * recall) / (precision + recall)
+    return f1_scores
+
+def average_metric(metric_dict):
+    return sum(metric_dict.values()) / len(metric_dict)
 
 # Load the dataset
 data = pd.read_csv("beer_reviews.csv")
 
-# Clean and preprocess the data
-data.dropna(subset=['brewery_name', 'review_profilename', 'beer_name'], inplace=True)
+# Preprocess the data
+data.dropna(subset=['review_profilename', 'beer_name', 'beer_style'], inplace=True)
 data['beer_abv'].fillna(data['beer_abv'].mean(), inplace=True)
 
-# Select relevant features
-features = ['brewery_name', 'review_aroma', 'review_appearance', 'beer_style', 'review_palate', 'review_taste',
-            'beer_abv']
-X = data[features]
-y = data['beer_name']
+# Create a dataset with user, beer, and review_overall columns
+ratings_data = data[['review_profilename', 'beer_name', 'review_overall']]
 
-# Encode categorical data
-categorical_features = ['brewery_name', 'beer_style']
-encoders = {}
-
-for feature in categorical_features:
-    encoder = LabelEncoder()
-    X.loc[:, feature] = encoder.fit_transform(X[feature])
-    encoders[feature] = encoder
-
-# Normalize the data
-scaler = MinMaxScaler()
-X = scaler.fit_transform(X)
+# Instantiate a Surprise Reader and load the dataset
+reader = Reader(rating_scale=(1, 5))
+surprise_data = Dataset.load_from_df(ratings_data, reader)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+trainset, testset = train_test_split(surprise_data, test_size=0.2, random_state=42)
 
-# Train the KNN model
-knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X_train, y_train)
+# Train the SVD model for collaborative filtering
+algo = SVD()
+algo.fit(trainset)
 
+# Test the SVD model
+predictions = algo.test(testset)
 
-# Function to generate three random beer names with good review_overall values so user can recognize them easier
-def get_random_beers(num_beers=3, min_review_overall=4.0):
-    good_beers = data[data['review_overall'] >= min_review_overall]
-    random_indices = random.sample(range(len(good_beers)), num_beers)
-    beer_choices = good_beers.iloc[random_indices]['beer_name'].values
-    return beer_choices
+# Calculate the evaluation metrics
+accuracy_score = accuracy.rmse(predictions)
+precisions, recalls = precision_recall_at_k(predictions, k=5, threshold=3.5)
+precision = average_metric(precisions)
+recall = average_metric(recalls)
 
+# Calculate F1 score for each user and average F1 score
+f1_scores = f1_score(precisions, recalls)
+avg_f1_score = average_metric(f1_scores)
 
-# Function to ask the user to select two beers
-def get_user_choices():
-    beer_choices = get_random_beers()
-    selected_beers = []
+print("Precision: ", precision)
+print("Recall: ", recall)
+print("F1 Score: ", avg_f1_score)
+print("Collaborative Filtering Accuracy (RMSE): ", accuracy_score)
 
-    while len(selected_beers) < 2:
-        print("\nChoose a beer from the following list (or type 'none' if you haven't heard of any):")
-        for i, beer in enumerate(beer_choices):
-            print(f"{i + 1}. {beer}")
+# Content-based filtering
+beer_data = data[['beer_name', 'beer_style']].drop_duplicates(subset='beer_name')
+beer_data.reset_index(drop=True, inplace=True)  # Add this line to reset the index
+tfidf = TfidfVectorizer(stop_words='english')
+tfidf_matrix = tfidf.fit_transform(beer_data['beer_style'])
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-        choice = input("Enter the number of the beer or 'none': ")
-        if choice.lower() == 'none':
-            beer_choices = get_random_beers()
-        elif choice.isdigit() and 1 <= int(choice) <= len(beer_choices):
-            selected_beers.append(beer_choices[int(choice) - 1])
-            if len(selected_beers) < 2:
-                print(f"\nYou selected {selected_beers[0]}. Now pick another beer.")
-                beer_choices = get_random_beers()
-        else:
-            print("Invalid input. Please try again.")
-
-    return selected_beers
+indices = pd.Series(beer_data.index, index=beer_data['beer_name'])  # Update this line to use the new index
 
 
-# Get user choices
-chosen_beers = get_user_choices()
 
-# Get the chosen beers' data
-chosen_beers_data = data[data['beer_name'].isin(chosen_beers)]
+def content_based_recommendations(beer_name, n_recommendations=2):  # Change n_recommendations to 2
+    # Check if the beer is in the indices
+    if beer_name not in indices:
+        return []
+    # Get the index of the beer
+    idx = indices[beer_name]
+    # Check if the index is within the bounds of the cosine similarity matrix
+    if idx >= len(cosine_sim):
+        return []
+    # Get the pairwise similarity scores of all beers with the given beer
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    # Sort the beers based on the similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    # Get the scores of the n most similar beers
+    sim_scores = sim_scores[1:n_recommendations + 1]
+    # Get the beer indices
+    beer_indices = [i[0] for i in sim_scores]
+    # Return the top n most similar beers
+    return beer_data['beer_name'].iloc[beer_indices].values
 
-# Calculate the average for 'beer_abv'
-avg_features = pd.Series(dtype=object)
-avg_features['beer_abv'] = chosen_beers_data['beer_abv'].mean()
 
-# Get the most common brewery from the chosen beers
-avg_features['brewery_name'] = chosen_beers_data['brewery_name'].mode()[0]
 
-# Add dummy values for the other features
-avg_features['review_aroma'] = data['review_aroma'].mean()
-avg_features['review_appearance'] = data['review_appearance'].mean()
-avg_features['beer_style'] = encoders['beer_style'].transform([data['beer_style'].mode()[0]])[0]
-avg_features['review_palate'] = data['review_palate'].mean()
-avg_features['review_taste'] = data['review_taste'].mean()
+# Get user input
+user_profile = input("Enter a profile name: ")
 
-# Encode the brewery_name
-avg_features['brewery_name'] = encoders['brewery_name'].transform([avg_features['brewery_name']])[0]
+# Get the top 5 beer recommendations for the user using collaborative filtering
+user_predictions = [pred for pred in predictions if pred[0] == user_profile]
+top_beers_collab = get_top_n(user_predictions, n=5)
 
-# Normalize the average features
-avg_features_df = pd.DataFrame([avg_features], columns=features)
-avg_features_transformed = scaler.transform(avg_features_df)
+# If the user has no collaborative filtering recommendations, use the top-rated beers instead
+if user_profile not in top_beers_collab:
+    top_beers_collab[user_profile] = ratings_data.groupby('beer_name')['review_overall'].mean().sort_values(ascending=False).head(5).reset_index().apply(lambda x: (x['beer_name'], x['review_overall']), axis=1).tolist()
 
-# Get the nearest neighbors
-distances, neighbors = knn.kneighbors(avg_features_transformed, return_distance=True)
+# Get content-based recommendations for each beer
+top_beers_content = []
+for beer, _ in top_beers_collab[user_profile]:
+    top_beers_content.extend(content_based_recommendations(beer))
 
-# Sort neighbors by distances
-sorted_neighbors = sorted(zip(neighbors[0], distances[0]), key=lambda x: x[1])
+# Combine collaborative and content-based recommendations
+top_beers_hybrid = list(set(top_beers_content))
 
-# Print recommendations
-print("\nBeers you may also like (strongest recommendation first):")
-for i, (idx, distance) in enumerate(sorted_neighbors, 1):
-    # Calculate accuracy from distance
-    accuracy = 1 / (1 + distance)
-    accuracy_percentage = accuracy * 100
-    print(f"{i}. {data.iloc[idx]['beer_name']} (Accuracy: {accuracy_percentage:.2f}%)")
+# Add more recommendations if necessary
+while len(top_beers_hybrid) < 10:
+    top_beer = ratings_data.groupby('beer_name')['review_overall'].mean().sort_values(ascending=False).reset_index().loc[len(top_beers_hybrid), 'beer_name']
+    if top_beer not in top_beers_hybrid:
+        top_beers_hybrid.append(top_beer)
+
+print("\nTop 10 beer recommendations for you (In order from most to least):")
+for i, beer in enumerate(top_beers_hybrid, 1):
+    print(f"{i}. {beer}")
 
