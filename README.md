@@ -36,9 +36,9 @@ The beer recommendation system was made using Python programming language and se
 
 https://github.com/Ncnchiche/beerProject
 
-    ```
+
     git clone [link]
-    ```
+
 
 2. Add Data Set To your repository:
 
