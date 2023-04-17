@@ -74,7 +74,7 @@ https://github.com/Ncnchiche/beerProject
     python3 main.py
     ```
 
-6. From CSV file add profile name when prompted and it will give you top 10 recommendations
+6. When prompted for Profile name(you can find them on CSV) and it will give you top 10 recommendations
 
  ## Demo from Command Line
  
