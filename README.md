@@ -8,7 +8,7 @@ This beer recommender system combines collaborative filtering and content-based 
 
 ## How it works?
 
-The recommender system utilizes two techniques:
+The beer recommender system utilizes two techniques:
 
 -   Collaborative Filtering: Using the SVD (Singular Value Decomposition) algorithm from the Surprise library, the system predicts the ratings a user would give to different beers based on their past ratings and the ratings of similar users.
 
