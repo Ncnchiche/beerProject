@@ -3,14 +3,18 @@
 
 ## What is this?
 
-This beer recommender system combines collaborative filtering and content-based filtering techniques to provide personalized beer recommendations.
+This beer recommender system combines collaborative filtering and content-based filtering techniques to provide personalized beer recommendations for beer lovers, helping them discover new beers based on their preferences.
 
 
 ## How it works?
 
-This code implements a hybrid recommender system for beer recommendations, combining both collaborative filtering and content-based filtering techniques. The collaborative filtering is done using the SVD (Singular Value Decomposition) algorithm from the Surprise library, while the content-based filtering uses the TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer from scikit-learn to find similar beers based on their styles.
+The recommender system utilizes two techniques:
 
-Overall, the beer recommendation system is a fun and interactive way for beer lovers to discover new beers they may enjoy based on their preferences
+-   Collaborative Filtering: Using the SVD (Singular Value Decomposition) algorithm from the Surprise library, the system predicts the ratings a user would give to different beers based on their past ratings and the ratings of similar users.
+
+-   Content-Based Filtering: Using the TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer from scikit-learn, the system finds similar beers based on their styles and recommends beers with similar styles to the ones the user has rated highly.
+
+The final recommendations are a combination of both collaborative filtering and content-based filtering results, providing a more comprehensive and personalized list of beer suggestions.
 
 
 
