@@ -1,30 +1,30 @@
-<h1 align="center">Beer Recommendation Project</h1>
+<h1 align="center">Beer Recommender System</h1>
 
 
 ## What is this?
 
-This beer recommendation system is a Python script that uses a K-Nearest Neighbors (KNN) classifier to suggest beers that a user might enjoy based on their preferences.
-
-When the code is executed, the user is prompted to choose two beers they enjoy from a list of options. The program then calculates the average values of the chosen beers' features, encodes and normalizes them, and passes them to the trained KNN model. The KNN model then finds the k nearest neighbors to the average features and recommends those beers to the user. The program also includes a function to generate three random beers with good overall review ratings to help the user choose their initial beer selections.
-
-Overall, the beer recommendation system is a fun and interactive way for beer lovers to discover new beers they may enjoy based on their preferences.
+This beer recommender system combines collaborative filtering and content-based filtering techniques to provide personalized beer recommendations.
 
 
 ## How it works?
-This program is a beer recommendation system based on user input of two beers they enjoy. It uses a dataset of beer reviews to train a K-Nearest Neighbors (KNN) machine learning model that can predict which beers the user may also like. The KNN model takes into account various features of beers, such as the brewery name, beer style, alcohol content (ABV), and other review metrics like taste and aroma. 
+
+This code implements a hybrid recommender system for beer recommendations, combining both collaborative filtering and content-based filtering techniques. The collaborative filtering is done using the SVD (Singular Value Decomposition) algorithm from the Surprise library, while the content-based filtering uses the TF-IDF (Term Frequency-Inverse Document Frequency) vectorizer from scikit-learn to find similar beers based on their styles.
+
+Overall, the beer recommendation system is a fun and interactive way for beer lovers to discover new beers they may enjoy based on their preferences
 
 
 
 ## How Was it Made?
 
-The beer recommendation system was made using Python programming language and several libraries which are included in the requirments(Pandas, NumPy, scikit-learn, and random)
+The beer recommendation system was made using Python programming language and several libraries which are included in the requirments(Pandas, NumPy, scikit-learn, random, surprise, etc)
 
 ### Requirements:
 
-- Python 3.6 or newer
-- pandas
-- numpy
-- scikit-learn
+-Python 3
+-pandas
+-numpy
+-scikit-learn
+-Surprise
 
 ## How to run
 
@@ -66,7 +66,9 @@ The beer recommendation system was made using Python programming language and se
     ```
     python3 main.py
     ```
-    
+
+6. From CSV file add profile name when prompted and it will give you top 10 recommendations
+
  ## Demo from Command Line
  
 ![My Image](samplePicture.png)
